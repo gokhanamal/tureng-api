@@ -1,5 +1,5 @@
 # tureng-api
-Simple Tureng.com API written by Golang. The API parsing Tureng.com.
+Simple Tureng.com API written by Golang. The API parsing Tureng.com and serve data into json format.
 
 ## Dependencies
 The API uses [Gin Web FrameWork](https://github.com/gin-gonic/gin) and [Go Query](https://github.com/PuerkitoBio/goquery). 

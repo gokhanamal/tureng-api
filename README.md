@@ -1,11 +1,14 @@
 # tureng-api
-Simple Tureng.com API written by Golang. The API parsing Tureng.com and serve data into json format.
+Simple Tureng.com API written by Golang. The API parsing Tureng.com and serve
+data into json format.
 
 ## Dependencies
-The API uses [Gin Web FrameWork](https://github.com/gin-gonic/gin) and [Go Query](https://github.com/PuerkitoBio/goquery). 
+The API uses [Gin Web FrameWork](https://github.com/gin-gonic/gin) and
+[Go Query](https://github.com/PuerkitoBio/goquery). 
 
 ## Installation
-To use tureng-api package, you need to install Go and set your Go workspace first.
+To use tureng-api package, you need to install Go and set your Go workspace
+first.
 
 1. Clone the project
 ```sh
@@ -34,11 +37,11 @@ http://localhost:8080/translate/apple
 Output
 ```
 {
- "tr" : Turkish meaning of the given word
- "en" : English meaning of the given word
- "kategori: Category of the word in Turkish
- "tur": Type of the given word. Exp. "isim, fiil, zarf"
+ "source" : Given phrase (turkish/english)
+ "target" : Meaning of the given phrase (turkish/english)
+ "kategori: Category of the phrase in Turkish
+ "tur": Type of the given phrase. Exp. "isim, fiil, zarf"
 }
 ```
 
-![Output](https://i.ibb.co/hRcvw4P/output.png)
+![Output](https://i.ibb.co/23MMqm0/output.png)

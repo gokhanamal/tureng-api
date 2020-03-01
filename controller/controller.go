@@ -9,18 +9,18 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-type Word struct {
-	Tr       string `json:"tr"`
-	En       string `json:"en"`
+type Phrase struct {
+	Source   string `json:"source"`
+	Target   string `json:"target"`
 	Category string `json:"kategori"`
 	Type     string `json:"tur"`
 }
 
-type Words []Word
+type Phrases []Phrase
 
-var words Words
+var phrases Phrases
 
-func FetchFromTureng(query string) (Words, error) {
+func FetchFromTureng(query string) (Phrases, error) {
 	res, err := http.Get("https://tureng.com/tr/turkce-ingilizce/" + query)
 	if err != nil {
 		log.Fatal(err)
@@ -39,33 +39,33 @@ func FetchFromTureng(query string) (Words, error) {
 		return nil, err
 	}
 
-	// Find the the all rows. Every row equals a word on tureng.com
-	tr := doc.Find("#englishResultsTable").First().Find("tbody tr")
-	tr.Each(func(i int, str *goquery.Selection) {
-		var word Word
+	// Find the the all rows. Every row equals a phrase on tureng.com
+	source := doc.Find("#englishResultsTable").First().Find("tbody tr")
+	source.Each(func(i int, str *goquery.Selection) {
+		var phrase Phrase
 		tableColumns := str.Find("td")
 
-		wordType := convertType(tableColumns.Eq(2).Find("i").Text())
-		word.Category = tableColumns.Eq(1).Text()
-		word.Type = wordType
-		word.En = tableColumns.Eq(2).Find("a").Text()
-		word.Tr = tableColumns.Eq(3).Find("a").Text()
+		phraseType := convertType(tableColumns.Eq(2).Find("i").Text())
+		phrase.Category = tableColumns.Eq(1).Text()
+		phrase.Type = phraseType
+		phrase.Target = tableColumns.Eq(3).Find("a").Text()
+		phrase.Source = tableColumns.Eq(2).Find("a").Text()
 
-		if word.En != "" || word.Tr != "" {
-			words = append(words, word)
+		if phrase.Target != "" || phrase.Source != "" {
+			phrases = append(phrases, phrase)
 		}
 	})
 
 	defer func() {
-		words = []Word{}
+		phrases = []Phrase{}
 	}()
 
-	return words, nil
+	return phrases, nil
 }
 
-func convertType(wordType string) string {
-	wordType = strings.Trim(wordType, " ")
-	switch wordType {
+func convertType(phraseType string) string {
+	phraseType = strings.Trim(phraseType, " ")
+	switch phraseType {
 	case "i.":
 		return "isim"
 	case "f.":

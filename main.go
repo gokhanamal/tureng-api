@@ -12,25 +12,25 @@ func main() {
 	router := gin.Default()
 	router.GET("/translate", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"error":    "Missing query, you should add to your request word that want to translate",
+			"error":    "Missing query, you should add to your request phrase that want to translate",
 			"response": "",
 		})
 	})
 
-	router.GET("/translate/:word", func(c *gin.Context) {
-		word := c.Param("word")
-		if word == "" {
+	router.GET("/translate/:phrase", func(c *gin.Context) {
+		phrase := c.Param("phrase")
+		if phrase == "" {
 			c.JSON(200, gin.H{
-				"error":    "Missing query, you should add to your request word that want to translate",
+				"error":    "Missing query, you should add to your request phrase that want to translate",
 				"response": "",
 			})
 			return
 		}
-		response, err := controller.FetchFromTureng(word)
+		response, err := controller.FetchFromTureng(phrase)
 		fmt.Println(response)
 		if err != nil {
 			c.JSON(200, gin.H{
-				"error":    "Someting went wrong while fetching the words from Tureng",
+				"error":    "Someting went wrong while fetching the phrases from Tureng",
 				"response": "",
 			})
 			return

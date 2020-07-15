@@ -12,8 +12,8 @@ import (
 type Phrase struct {
 	Source   string `json:"source"`
 	Target   string `json:"target"`
-	Category string `json:"kategori"`
-	Type     string `json:"tur"`
+	Category string `json:"category"`
+	Type     string `json:"type"`
 }
 
 type Phrases []Phrase
@@ -75,6 +75,6 @@ func convertType(phraseType string) string {
 	case "ünl.":
 		return "ünlem"
 	default:
-		return ""
+		return "unknown"
 	}
 }

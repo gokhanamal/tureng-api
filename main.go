@@ -10,10 +10,18 @@ import (
 
 func main() {
 	router := gin.Default()
+
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"error":    "Please go /translate to use the API",
+			"response": nil,
+		})
+	})
+
 	router.GET("/translate", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"error":    "Missing query, you should add to your request phrase that want to translate",
-			"response": "",
+			"response": nil,
 		})
 	})
 
@@ -22,7 +30,7 @@ func main() {
 		if phrase == "" {
 			c.JSON(200, gin.H{
 				"error":    "Missing query, you should add to your request phrase that want to translate",
-				"response": "",
+				"response": nil,
 			})
 			return
 		}
@@ -31,12 +39,12 @@ func main() {
 		if err != nil {
 			c.JSON(200, gin.H{
 				"error":    "Someting went wrong while fetching the phrases from Tureng",
-				"response": "",
+				"response": nil,
 			})
 			return
 		}
 		c.JSON(200, gin.H{
-			"error":    "",
+			"error":    nil,
 			"response": response,
 		})
 	})

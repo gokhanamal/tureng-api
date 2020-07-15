@@ -1,5 +1,7 @@
 module github.com/gokhanamal/tureng-api
 
+go 1.14
+
 require (
 	github.com/PuerkitoBio/goquery v1.5.0
 	github.com/gin-contrib/sse v0.0.0-20190301062529-5545eab6dad3 // indirect

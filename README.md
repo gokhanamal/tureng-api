@@ -5,8 +5,7 @@ data into json format.
 
 ## Dependencies
 
-The API uses [Gin Web FrameWork](https://github.com/gin-gonic/gin) and
-[Go Query](https://github.com/PuerkitoBio/goquery).
+The API uses [Go Query](https://github.com/PuerkitoBio/goquery).
 
 ## Installation
 
@@ -42,7 +41,7 @@ $ go run main.go
 ### Example Request
 
 ```sh
-http://localhost:8080/translate/apple
+http://localhost:8080/translate?phrase=concurrency
 ```
 
 Output

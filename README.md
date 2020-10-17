@@ -51,8 +51,8 @@ Output
 {
  "source" : Given phrase (turkish/english)
  "target" : Meaning of the given phrase (turkish/english)
- "kategori: Category of the phrase in Turkish
- "tur": Type of the given phrase. Exp. "isim, fiil, zarf"
+ "category: Category of the phrase in Turkish
+ "type": Type of the given phrase. Exp. "isim, fiil, zarf"
 }
 ```
 

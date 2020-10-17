@@ -1,56 +1,72 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"net/http"
-
-	"github.com/gin-gonic/gin"
 	"github.com/gokhanamal/tureng-api/controller"
+	"log"
+	"net/http"
+	"strings"
 )
 
+type Error struct {
+	Message string `json:"message, omitempty"`
+}
+
+type Response struct {
+	Count int `json:"count"`
+	Phrases []controller.Phrase `json:"phrases"`
+}
+
+
+func writeJSON(w http.ResponseWriter, v interface{}) {
+	jsonData, err := json.Marshal(v)
+
+	if err != nil {
+		log.Printf("json write error %v", err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonData)
+}
+
 func main() {
-	router := gin.Default()
-
-	router.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"error":    "Please go /translate to use the API",
-			"response": nil,
-		})
+	http.HandleFunc("/",  func(w http.ResponseWriter, r *http.Request) {
+		err := Error{
+			"Please use /translate",
+		}
+		fmt.Print(err)
+		w.WriteHeader(http.StatusNotFound)
+		writeJSON(w, err)
 	})
 
-	router.GET("/translate", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"error":    "Missing query, you should add to your request phrase that want to translate",
-			"response": nil,
-		})
-	})
+	http.HandleFunc("/translate",  func(w http.ResponseWriter, req *http.Request) {
+		queries := req.URL.Query()
+		phrase := queries["phrase"]
 
-	router.GET("/translate/:phrase", func(c *gin.Context) {
-		phrase := c.Param("phrase")
-		if phrase == "" {
-			c.JSON(200, gin.H{
-				"error":    "Missing query, you should add to your request phrase that want to translate",
-				"response": nil,
-			})
+		if phrase == nil {
+			err := Error{
+				"Missing query, you should add to your request phrase that want to translate.",
+			}
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			writeJSON(w, err)
 			return
 		}
-		response, err := controller.FetchFromTureng(phrase)
-		fmt.Println(response)
+
+		response, err := controller.FetchFromTureng(strings.Join(phrase, ""))
 		if err != nil {
-			c.JSON(200, gin.H{
-				"error":    "Someting went wrong while fetching the phrases from Tureng",
-				"response": nil,
-			})
-			return
+			err := Error{
+				"Someting went wrong while fetching the phrases from Tureng.",
+			}
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			writeJSON(w, err)
 		}
-		c.JSON(200, gin.H{
-			"error":    nil,
-			"response": response,
-		})
+
+		w.WriteHeader(http.StatusOK)
+		writeJSON(w, Response{Count: len(response), Phrases: response})
 	})
 
-	err := router.Run(":8080")
-
+	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		fmt.Printf("%s", err)
 	}

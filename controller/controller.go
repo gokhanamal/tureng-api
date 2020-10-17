@@ -40,14 +40,20 @@ func FetchFromTureng(query string) (Phrases, error) {
 	}
 
 	// Find the the all rows. Every row equals a phrase on tureng.com
-	source := doc.Find("#englishResultsTable").First().Find("tbody tr")
+	source := doc.Find("#englishResultsTable").Find("tbody tr")
 	source.Each(func(i int, str *goquery.Selection) {
 		var phrase Phrase
 		tableColumns := str.Find("td")
 
-		phraseType := convertType(tableColumns.Eq(2).Find("i").Text())
+		secondColumnTypeText := tableColumns.Eq(2).Find("i").Text()
+
+		if  secondColumnTypeText != "" {
+			phrase.Type = convertType(secondColumnTypeText)
+		} else {
+			phrase.Type = convertType(tableColumns.Eq(3).Find("i").Text())
+		}
+
 		phrase.Category = tableColumns.Eq(1).Text()
-		phrase.Type = phraseType
 		phrase.Target = tableColumns.Eq(3).Find("a").Text()
 		phrase.Source = tableColumns.Eq(2).Find("a").Text()
 

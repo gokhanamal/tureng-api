@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"crypto/tls"
 	"errors"
 	"log"
 	"net/http"
@@ -21,7 +22,16 @@ type Phrases []Phrase
 var phrases Phrases
 
 func FetchFromTureng(query string) (Phrases, error) {
-	res, err := http.Get("https://tureng.com/tr/turkce-ingilizce/" + query)
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			MaxVersion: tls.VersionTLS12,
+		},
+	}
+	client := &http.Client{Transport: tr}
+	req, err := http.NewRequest("GET", "https://tureng.com/tr/turkce-ingilizce/"+query, nil)
+	req.Header.Set("User-Agent", "Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148")
+	res, err := client.Do(req)
+	//res, err := http.Get("https://tureng.com/tr/turkce-ingilizce/" + query)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
@@ -47,7 +57,7 @@ func FetchFromTureng(query string) (Phrases, error) {
 
 		secondColumnTypeText := tableColumns.Eq(2).Find("i").Text()
 
-		if  secondColumnTypeText != "" {
+		if secondColumnTypeText != "" {
 			phrase.Type = convertType(secondColumnTypeText)
 		} else {
 			phrase.Type = convertType(tableColumns.Eq(3).Find("i").Text())
@@ -80,6 +90,8 @@ func convertType(phraseType string) string {
 		return "zarf"
 	case "ünl.":
 		return "ünlem"
+	case "s.":
+		return "sıfat"
 	default:
 		return "unknown"
 	}

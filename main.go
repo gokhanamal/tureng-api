@@ -3,10 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gokhanamal/tureng-api/controller"
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/gokhanamal/tureng-api/controller"
 )
 
 type Error struct {
@@ -14,10 +15,10 @@ type Error struct {
 }
 
 type Response struct {
-	Count int `json:"count"`
+	Count   int                 `json:"count"`
 	Phrases []controller.Phrase `json:"phrases"`
+	Word    []string            `json:"word"`
 }
-
 
 func writeJSON(w http.ResponseWriter, v interface{}) {
 	jsonData, err := json.Marshal(v)
@@ -31,7 +32,7 @@ func writeJSON(w http.ResponseWriter, v interface{}) {
 }
 
 func main() {
-	http.HandleFunc("/",  func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		err := Error{
 			"Please use /translate",
 		}
@@ -40,7 +41,7 @@ func main() {
 		writeJSON(w, err)
 	})
 
-	http.HandleFunc("/translate",  func(w http.ResponseWriter, req *http.Request) {
+	http.HandleFunc("/translate", func(w http.ResponseWriter, req *http.Request) {
 		queries := req.URL.Query()
 		phrase := queries["phrase"]
 
@@ -63,7 +64,7 @@ func main() {
 		}
 
 		w.WriteHeader(http.StatusOK)
-		writeJSON(w, Response{Count: len(response), Phrases: response})
+		writeJSON(w, Response{Count: len(response), Phrases: response, Word: phrase})
 	})
 
 	err := http.ListenAndServe(":8080", nil)
